@@ -13,15 +13,12 @@ export class AuthResolver {
 
   @Mutation(() => SignInResponse)
   @UseGuards(LocalAuthGuard)
-  async signIn(
-    @Args('signInInput') signInInput: SignInInput,
-    @Context() context,
-  ) {
+  signIn(@Args('signInInput') signInInput: SignInInput, @Context() context) {
     return this.authService.login(context.user);
   }
 
   @Mutation(() => SignUpResponse)
-  async signUp(@Args('signUpInput') signUpInput: SignUpInput) {
+  signUp(@Args('signUpInput') signUpInput: SignUpInput) {
     return this.authService.register(signUpInput);
   }
 }

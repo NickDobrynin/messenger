@@ -10,7 +10,7 @@ export class UsersResolver {
 
   @Query(() => User)
   @UseGuards(JwtAuthGuard)
-  async getUser(@Args('username') username: string) {
+  getUser(@Args('username') username: string) {
     return this.usersService.getUser(username);
   }
 }
