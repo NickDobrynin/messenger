@@ -1,10 +1,28 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { GraphQLModule } from '@nestjs/graphql';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
+import { UsersModule } from './users/users.module';
+import { User } from './users/entities/user.entity';
+import { ApolloDriver } from '@nestjs/apollo';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'mongodb',
+      url: 'mongodb://127.0.0.1:27017/messengerDB',
+      synchronize: true,
+      useUnifiedTopology: true,
+      entities: [User],
+    }),
+    GraphQLModule.forRoot({
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      sortSchema: true,
+      driver: ApolloDriver,
+    }),
+    UsersModule,
+    AuthModule,
+  ],
 })
 export class AppModule {}
