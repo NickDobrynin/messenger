@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-import { UsersModule } from './users/users.module';
-import { User } from './users/entities/user.entity';
+import { UsersModule } from './modules/users/users.module';
+import { User } from './modules/users/entities/user.entity';
 import { ApolloDriver } from '@nestjs/apollo';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [

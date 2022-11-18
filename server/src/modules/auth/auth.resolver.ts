@@ -3,10 +3,10 @@ import { AuthService } from './auth.service';
 import { SignInResponse } from './dto/sign-in-response';
 import { SignInInput } from './dto/sign-in.input';
 import { UseGuards } from '@nestjs/common';
-import { LocalAuthGuard } from './local-auth.guard';
+import { LocalAuthGuard } from '../../common/guards/local-auth.guard';
 import { SignUpInput } from './dto/sign-up.input';
 import { SignUpResponse } from './dto/sign-up-response';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { AuthResponse } from './dto/auth-response';
 
 @Resolver()
