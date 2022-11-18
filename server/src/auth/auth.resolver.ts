@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Context, Query } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { SignInResponse } from './dto/sign-in-response';
 import { SignInInput } from './dto/sign-in.input';
@@ -6,10 +6,18 @@ import { UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from './local-auth.guard';
 import { SignUpInput } from './dto/sign-up.input';
 import { SignUpResponse } from './dto/sign-up-response';
+import { JwtAuthGuard } from './jwt-auth.guard';
+import { AuthResponse } from './dto/auth-response';
 
 @Resolver()
 export class AuthResolver {
   constructor(private authService: AuthService) {}
+
+  @Query(() => AuthResponse)
+  @UseGuards(JwtAuthGuard)
+  auth(@Context() context) {
+    return this.authService.auth(context.req.user.username);
+  }
 
   @Mutation(() => SignInResponse)
   @UseGuards(LocalAuthGuard)
