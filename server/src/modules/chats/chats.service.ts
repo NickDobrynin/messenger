@@ -43,8 +43,14 @@ export class ChatsService {
       where: { id: chatId },
     });
 
+    const user = await this.usersService.getUserById(to);
+    if (!user) {
+      throw new Error('User not exists!');
+    }
+
     const newMessage = {
       id: chat.messages.length + 1,
+      chatId,
       message,
       from,
       to,

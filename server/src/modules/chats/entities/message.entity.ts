@@ -10,6 +10,10 @@ export class Message {
 
   @Column()
   @Field()
+  chatId: string;
+
+  @Column()
+  @Field()
   message: string;
 
   @Column()
