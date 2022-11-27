@@ -6,13 +6,30 @@ type AuthResponse {
   user: User!
 }
 
+type Chat {
+  id: ID!
+  members: [String!]!
+  messages: [Message!]!
+}
+
+type Message {
+  date: String!
+  from: String!
+  id: ID!
+  message: String!
+  to: String!
+}
+
 type Mutation {
+  createChat(to: String!): Chat!
+  sendMessage(chatId: String!, message: String!, to: String!): Message!
   signIn(signInInput: SignInInput!): SignInResponse!
   signUp(signUpInput: SignUpInput!): SignUpResponse!
 }
 
 type Query {
   auth: AuthResponse!
+  getChats: [Chat!]!
   getUser(username: String!): User!
 }
 
@@ -34,6 +51,10 @@ input SignUpInput {
 type SignUpResponse {
   access_token: String!
   user: User!
+}
+
+type Subscription {
+  newMessage(id: String!): Message!
 }
 
 type User {
