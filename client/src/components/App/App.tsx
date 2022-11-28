@@ -14,9 +14,12 @@ const AppWrapper = styled.main`
 `;
 
 function App() {
-  const [auth, setAuth] = useState<boolean>(true);
+  const [auth, setAuth] = useState<boolean>(false);
 
-  const onLogout = () => setAuth(false);
+  const onLogout = () => {
+    localStorage.removeItem('token');
+    setAuth(false);
+  };
 
   return (
     <AppWrapper>
@@ -25,7 +28,7 @@ function App() {
           {!auth && <Route path="/" element={<Navigate to="/sign-in" replace />} />}
           <Route path="/" element={[<Sidebar key={1} onLogout={onLogout} />, <Chat key={2} />]}/>
           <Route path="/sign-in" element={<SignIn />}/>
-          <Route path="/sign-up" element={<SignUp />}/>
+          <Route path="/sign-up" element={<SignUp auth={auth} setAuth={setAuth}/>}/>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

@@ -43,7 +43,7 @@ export class AuthService {
     const user = await this.usersService.getUser(signUpInput.username);
 
     if (user) {
-      throw new Error('User already exists!');
+      throw new Error('Логин уже существует');
     }
 
     const password = await bcrypt.hash(signUpInput.password, 10);

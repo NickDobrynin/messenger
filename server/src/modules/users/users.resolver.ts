@@ -10,7 +10,7 @@ export class UsersResolver {
 
   @Query(() => User)
   @UseGuards(JwtAuthGuard)
-  getUser(@Args('username') username: string) {
+  getUser(@Args('username') username: string): Promise<User> {
     return this.usersService.getUser(username);
   }
 }

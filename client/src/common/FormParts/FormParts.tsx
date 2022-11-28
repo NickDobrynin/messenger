@@ -76,7 +76,9 @@ export const Error = styled.div`
   }
 `;
 
-
+export const ServerError = styled.p`
+  color: #f52525;
+`;
 
 export const Button = styled.button`
   height: 2.5rem;

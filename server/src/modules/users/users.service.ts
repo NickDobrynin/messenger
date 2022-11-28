@@ -17,14 +17,14 @@ export class UsersService {
       id: uuid(),
     });
 
-    return await this.usersRepository.save(user);
+    return this.usersRepository.save(user);
   }
 
   async getUser(username: string) {
-    return await this.usersRepository.findOneBy({ username });
+    return this.usersRepository.findOneBy({ username });
   }
 
   async getUserById(id: string) {
-    return await this.usersRepository.findOneBy({ id });
+    return this.usersRepository.findOneBy({ id });
   }
 }

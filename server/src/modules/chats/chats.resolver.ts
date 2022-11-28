@@ -23,25 +23,25 @@ export class ChatsResolver {
 
   @Query(() => [Chat])
   @UseGuards(JwtAuthGuard)
-  getChats(@Context() context) {
+  getChats(@Context() context): Promise<Chat[]> {
     return this.chatsService.getChatsById(context.req.user.userId);
   }
 
   @Mutation(() => Chat)
   @UseGuards(JwtAuthGuard)
-  createChat(@Args('to') to: string, @Context() context) {
+  createChat(@Args('to') to: string, @Context() context): Promise<Chat> {
     return this.chatsService.createChat(context.req.user.userId, to);
   }
 
   @Mutation(() => Message)
   @UseGuards(JwtAuthGuard)
-  sendMessage(
+  async sendMessage(
     @Args('chatId') chatId: string,
     @Args('to') to: string,
     @Args('message') message: string,
     @Context() context,
-  ) {
-    const newMessage = this.chatsService.sendMessage(
+  ): Promise<Message> {
+    const newMessage = await this.chatsService.sendMessage(
       chatId,
       context.req.user.userId,
       to,

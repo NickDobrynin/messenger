@@ -23,7 +23,7 @@ const SignIn = () => {
 
       if (!values.username) {
         errors.username = 'Это обязательное поле';
-      } else if (values.username.length < 5) {
+      } else if (values.username.length < 4) {
         errors.username = 'Логин должен содержать не менее 4 символов';
       } else if (values.username.length > 10) {
         errors.username = 'Логин должен содержать не более 10 символов';

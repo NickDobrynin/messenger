@@ -1,31 +1,61 @@
-import {FormikHelpers, useFormik} from 'formik';
-import {Link} from 'react-router-dom';
+import {useFormik} from 'formik';
+import {Link, Navigate} from 'react-router-dom';
 import {Wrapper, Title, Label, Input, Error, Button, Text} from '../../common/FormParts';
 import useTransitionError from '../../hooks/transitionError';
 import {Transition} from 'react-transition-group';
+import {gql} from 'graphql-tag';
+import {useMutation} from '@apollo/client';
+import {ServerError} from '../../common/FormParts/FormParts';
+
+interface IProps {
+  auth: boolean;
+  setAuth: (bool: boolean) => void;
+}
 
 interface IValues {
   username: string;
   password: string;
 }
 
-const SignUp = () => {
+const SIGN_UP = gql`
+    mutation signUp($user: SignUpInput!) {
+        signUp(signUpInput: $user) {
+            access_token
+        }
+    }
+`;
+
+const SignUp: React.FC<IProps> = ({auth, setAuth}) => {
+  const [signUp, {loading, error}] = useMutation(SIGN_UP);
+
   const formik = useFormik({
     initialValues: {
       username: '',
       password: ''
     },
-    onSubmit: (values: IValues, {setSubmitting}: FormikHelpers<IValues>) => {
-      console.log(values);
+    onSubmit: async (values: IValues) => {
+      try {
+        const response = await signUp({
+          variables: {
+            user: {
+              username: values.username,
+              password: values.password
+            }
+          },
+        });
+
+        localStorage.setItem('token', response.data.signUp.access_token);
+        setAuth(true);
+      } catch (e) {}
     },
     validate: values => {
       let errors = {} as IValues;
 
       if (!values.username) {
         errors.username = 'Это обязательное поле';
-      } else if (values.username.length < 5) {
+      } else if (values.username.length < 4) {
         errors.username = 'Логин должен содержать не менее 4 символов';
-      } else if (values.username.length > 10) {
+      } else if (values.username.length > 12) {
         errors.username = 'Логин должен содержать не более 10 символов';
       }
 
@@ -40,8 +70,10 @@ const SignUp = () => {
   const [usernameError, usernameHasError] = useTransitionError(formik.errors.username, formik.touched.username);
   const [passwordError, passwordHasError] = useTransitionError(formik.errors.password, formik.touched.password);
 
+  if (auth) return <Navigate to="/" />
   return (
     <Wrapper>
+      <ServerError>{error?.message}</ServerError>
       <Title>Регистрация</Title>
       <form onSubmit={formik.handleSubmit}
             style={{display: 'flex', flexDirection: 'column', maxWidth: '16rem', width: '100%'}}>
@@ -67,7 +99,7 @@ const SignUp = () => {
             }
           </Transition>
         </Label>
-        <Button type="submit">регистрация</Button>
+        <Button type="submit" disabled={loading}>регистрация</Button>
       </form>
       <Text>Уже есть аккаунт? <Link to="/sign-in">Войти</Link></Text>
     </Wrapper>
