@@ -1,22 +1,52 @@
-import {FormikHelpers, useFormik} from 'formik';
-import {Link} from 'react-router-dom';
+import {useFormik} from 'formik';
+import {Link, Navigate} from 'react-router-dom';
 import {Wrapper, Title, Label, Input, Error, Button, Text} from '../../common/FormParts';
 import {Transition} from 'react-transition-group';
-import useTransitionError from '../../hooks/transitionError';
+import useTransitionError from '../../hooks/useTransitionError';
+import {gql} from 'graphql-tag';
+import {useMutation} from '@apollo/client';
+import {ServerError} from '../../common/FormParts/FormParts';
+import React from 'react';
 
+interface IProps {
+  isAuth: boolean;
+  setIsAuth: (bool: boolean) => void;
+}
 interface IValues {
   username: string;
   password: string;
 }
 
-const SignIn = () => {
+const SIGN_IN = gql`
+    mutation signIn($user: SignInInput!) {
+        signIn(signInInput: $user) {
+            access_token
+        }
+    }
+`;
+
+const SignIn: React.FC<IProps> = ({isAuth, setIsAuth}) => {
+  const [signIn, {loading, error}] = useMutation(SIGN_IN);
+
   const formik = useFormik({
     initialValues: {
       username: '',
       password: ''
     },
-    onSubmit: (values: IValues, {setSubmitting}: FormikHelpers<IValues>) => {
-      console.log(values);
+    onSubmit: async (values: IValues) => {
+      try {
+        const response = await signIn({
+          variables: {
+            user: {
+              username: values.username,
+              password: values.password
+            }
+          }
+        });
+
+        localStorage.setItem('token', response.data.signIn.access_token);
+        setIsAuth(true);
+      } catch (e) {}
     },
     validate: values => {
       let errors = {} as IValues;
@@ -40,8 +70,10 @@ const SignIn = () => {
   const [usernameError, usernameHasError] = useTransitionError(formik.errors.username, formik.touched.username);
   const [passwordError, passwordHasError] = useTransitionError(formik.errors.password, formik.touched.password);
 
+  if (isAuth) return <Navigate to="/" replace />;
   return (
     <Wrapper>
+      <ServerError>{error?.message}</ServerError>
       <Title>Вход</Title>
       <form onSubmit={formik.handleSubmit}
             style={{display: 'flex', flexDirection: 'column', maxWidth: '16rem', width: '100%'}}>
@@ -67,7 +99,7 @@ const SignIn = () => {
             }
           </Transition>
         </Label>
-        <Button type="submit">вход</Button>
+        <Button type="submit" disabled={loading}>вход</Button>
       </form>
       <Text>Еще нет аккаунта? <Link to="/sign-up">Зарегистрироваться</Link></Text>
     </Wrapper>

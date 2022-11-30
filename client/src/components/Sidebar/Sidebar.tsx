@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import {UserActions, ChatList, Search} from '../../common/Sidebar';
 import React from 'react';
+import {Navigate} from 'react-router-dom';
 
 const Wrapper = styled.div`
   display: flex;

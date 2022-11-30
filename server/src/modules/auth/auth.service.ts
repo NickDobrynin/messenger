@@ -14,8 +14,10 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<User> {
     const user = await this.usersService.getUser(username);
+    if (!user) throw new Error('Неверный логин или пароль');
 
     const valid = await bcrypt.compare(password, user?.password);
+    if (!valid) throw new Error('Неверный логин или пароль');
 
     if (user && valid) {
       return user;
