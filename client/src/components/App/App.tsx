@@ -6,7 +6,7 @@ import {Routes, Route, Navigate} from 'react-router-dom';
 import {SignIn} from '../SignIn';
 import {SignUp} from '../SignUp';
 import {gql} from 'graphql-tag';
-import {useQuery, useApolloClient} from '@apollo/client';
+import {useApolloClient} from '@apollo/client';
 
 const AppWrapper = styled.main`
   display: flex;
@@ -48,6 +48,7 @@ function App() {
   const onLogout = () => {
     localStorage.clear();
     setIsAuth(false);
+    client.resetStore();
   }
 
   if (isLoading) return <div>Loading</div>;

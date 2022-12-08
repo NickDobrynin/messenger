@@ -31,7 +31,7 @@ type Mutation {
 type Query {
   auth: AuthResponse!
   getChats: [Chat!]!
-  getUser(username: String!): User!
+  getUser: User!
 }
 
 input SignInInput {
@@ -55,7 +55,7 @@ type SignUpResponse {
 }
 
 type Subscription {
-  newMessage(id: String!): Message!
+  newMessage(username: String!): Message!
 }
 
 type User {

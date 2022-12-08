@@ -1,4 +1,4 @@
-import { Resolver, Query, Args } from '@nestjs/graphql';
+import { Resolver, Query, Context, Args } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { UseGuards } from '@nestjs/common';
@@ -10,7 +10,7 @@ export class UsersResolver {
 
   @Query(() => User)
   @UseGuards(JwtAuthGuard)
-  getUser(@Args('username') username: string): Promise<User> {
-    return this.usersService.getUser(username);
+  getUser(@Context() context): Promise<User> {
+    return this.usersService.getUser(context.req.user.username);
   }
 }

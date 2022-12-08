@@ -71,11 +71,6 @@ export type Query = {
   getUser: User;
 };
 
-
-export type QueryGetUserArgs = {
-  username: Scalars['String'];
-};
-
 export type SignInInput = {
   password: Scalars['String'];
   username: Scalars['String'];
@@ -105,7 +100,7 @@ export type Subscription = {
 
 
 export type SubscriptionNewMessageArgs = {
-  id: Scalars['String'];
+  username: Scalars['String'];
 };
 
 export type User = {

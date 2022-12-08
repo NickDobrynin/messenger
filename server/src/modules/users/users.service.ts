@@ -20,11 +20,7 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async getUser(username: string) {
+  async getUser(username) {
     return this.usersRepository.findOneBy({ username });
-  }
-
-  async getUserById(id: string) {
-    return this.usersRepository.findOneBy({ id });
   }
 }

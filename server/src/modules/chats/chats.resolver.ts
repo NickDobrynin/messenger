@@ -24,13 +24,13 @@ export class ChatsResolver {
   @Query(() => [Chat])
   @UseGuards(JwtAuthGuard)
   getChats(@Context() context): Promise<Chat[]> {
-    return this.chatsService.getChatsById(context.req.user.userId);
+    return this.chatsService.getChats(context.req.user.username);
   }
 
   @Mutation(() => Chat)
   @UseGuards(JwtAuthGuard)
   createChat(@Args('to') to: string, @Context() context): Promise<Chat> {
-    return this.chatsService.createChat(context.req.user.userId, to);
+    return this.chatsService.createChat(context.req.user.username, to);
   }
 
   @Mutation(() => Message)
@@ -43,7 +43,7 @@ export class ChatsResolver {
   ): Promise<Message> {
     const newMessage = await this.chatsService.sendMessage(
       chatId,
-      context.req.user.userId,
+      context.req.user.username,
       to,
       message,
     );
@@ -56,12 +56,14 @@ export class ChatsResolver {
   @Subscription(() => Message, {
     filter: async (payload, variables) => {
       const message = await payload.newMessage;
-      return message.from === variables.id || message.to === variables.id;
+      return (
+        message.from === variables.username || message.to === variables.username
+      );
     },
   })
   @UseGuards(JwtAuthGuard)
-  newMessage(@Args('id') id: string, @Context() context) {
-    if (id !== context.req.user.userId) {
+  newMessage(@Args('username') username: string, @Context() context) {
+    if (username !== context.req.user.username) {
       throw new Error('You can only subscribe to your chats');
     }
     return this.pubSub.asyncIterator('newMessage');

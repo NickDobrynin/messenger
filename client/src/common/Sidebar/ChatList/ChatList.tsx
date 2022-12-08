@@ -1,5 +1,8 @@
 import styled from 'styled-components';
-import {ChatItem} from '../index';
+import {ChatItem, ChatActions} from '../index';
+import {gql} from 'graphql-tag';
+import {useQuery, useApolloClient} from '@apollo/client';
+import {Chat} from '../../../../types';
 
 const Wrapper = styled.div`
   background-color: #fff;
@@ -10,21 +13,44 @@ const Wrapper = styled.div`
   padding: .9rem 1rem;
 `;
 
-const Title = styled.h4`
-  font-size: 1.2rem;
-  line-height: 1;
-  letter-spacing: -1px;
-  &:not(:last-child) {
-    margin-bottom: .6rem;
-  }
+const GET_USER = gql`
+    query getUser {
+        getUser {
+            username
+        }
+    }
+`;
+
+const GET_CHATS = gql`
+    query {
+        getChats {
+            id
+            members
+            messages {
+                id
+                date
+                from
+                message
+            }
+        }
+    }
 `;
 
 const ChatList = () => {
+  const user = useQuery(GET_USER);
+  const chats = useQuery(GET_CHATS);
+
   return (
     <Wrapper>
-      <Title>Чаты</Title>
-      <ChatItem name="Anil" message="Hahahaha!"/>
-      <ChatItem name="Sam" message="Hello"/>
+      <ChatActions />
+      {
+        chats && user && chats?.data?.getChats?.map((chat: Chat, index: number) => {
+          const name = chat.members.filter((member) => {
+            return member !== user?.data?.getUser?.username;
+          })
+          return <ChatItem key={index} name={name[0]} message={chat?.messages[chat.messages.length - 1]?.message} />
+        })
+      }
     </Wrapper>
   );
 };

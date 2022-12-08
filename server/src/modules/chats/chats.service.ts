@@ -13,20 +13,20 @@ export class ChatsService {
     @InjectRepository(Chat) private chatsRepository: Repository<Chat>,
   ) {}
 
-  async getChatsById(id): Promise<Chat[]> {
+  async getChats(username): Promise<Chat[]> {
     const chats = await this.chatsRepository.find();
-    return chats.filter((chat) => chat.members.includes(id));
+    return chats.filter((chat) => chat.members.includes(username));
   }
 
   async createChat(from, to): Promise<Chat> {
-    const userChats = await this.getChatsById(from);
-    const user = await this.usersService.getUserById(to);
+    const userChats = await this.getChats(from);
+    const user = await this.usersService.getUser(to);
 
     if (!user) {
-      throw new Error('User not exists!');
+      throw new Error('Пользователь не найден');
     }
     if (userChats.some((chat) => chat.members.includes(to))) {
-      throw new Error('Chat already exists!');
+      throw new Error('Чат уже существует');
     }
 
     const chat = this.chatsRepository.create({
@@ -43,9 +43,9 @@ export class ChatsService {
       where: { id: chatId },
     });
 
-    const user = await this.usersService.getUserById(to);
+    const user = await this.usersService.getUser(to);
     if (!user) {
-      throw new Error('User not exists!');
+      throw new Error('Пользователь не найден');
     }
 
     const newMessage = {
