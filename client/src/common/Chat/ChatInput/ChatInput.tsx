@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 import React, {useState} from 'react';
+import {useMutation} from '@apollo/client';
+import SEND_MESSAGE from '../../../apollo/api/sendMessage';
+import GET_CHATS from '../../../apollo/api/getChats';
+import {Chat} from '../../../../types';
 
 const Input = styled.input`
   width: 100%;
@@ -18,17 +22,40 @@ const Input = styled.input`
   }
 `;
 
-const ChatInput = () => {
+interface IChats {
+  getChats: Chat[]
+}
+interface IChatInput {
+  chatId: string;
+  to: string;
+}
+
+const ChatInput: React.FC<IChatInput> = ({chatId, to}) => {
+  const [sendMessage] = useMutation(SEND_MESSAGE);
   const [inputValue, setInputValue] = useState<string>('');
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
 
-  const onSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const onSubmit = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       if (inputValue.trim()) {
-        console.log(inputValue.trim());
+        await sendMessage({
+          variables: {
+            message: inputValue,
+            to,
+            chatId
+          },
+          update: (cache, {data: {sendMessage}}) => {
+            const chats = cache.readQuery<IChats>({query: GET_CHATS})!.getChats;
+            cache.writeQuery({
+              query: GET_CHATS,
+              data: 
+
+            })
+          }
+        });
         setInputValue('');
       }
     }

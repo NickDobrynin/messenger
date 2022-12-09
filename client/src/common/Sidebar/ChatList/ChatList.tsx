@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 import {ChatItem, ChatActions} from '../index';
-import {gql} from 'graphql-tag';
-import {useQuery, useApolloClient} from '@apollo/client';
+import {useQuery} from '@apollo/client';
 import {Chat} from '../../../../types';
+import GET_USER from '../../../apollo/api/getUser';
+import GET_CHATS from '../../../apollo/api/getChats';
+import React, {MouseEvent} from 'react';
+import {log} from 'util';
 
 const Wrapper = styled.div`
   background-color: #fff;
@@ -13,42 +16,38 @@ const Wrapper = styled.div`
   padding: .9rem 1rem;
 `;
 
-const GET_USER = gql`
-    query getUser {
-        getUser {
-            username
-        }
-    }
-`;
+interface IChatList {
+  inputValue: string;
+  setActiveChat: (chatName: string | null) => void
+}
 
-const GET_CHATS = gql`
-    query {
-        getChats {
-            id
-            members
-            messages {
-                id
-                date
-                from
-                message
-            }
-        }
-    }
-`;
-
-const ChatList = () => {
+const ChatList: React.FC<IChatList> = ({inputValue, setActiveChat}) => {
   const user = useQuery(GET_USER);
   const chats = useQuery(GET_CHATS);
 
+  const filterChats = (chats: Chat[], search: string) => {
+    if (!search.trim()) return chats;
+    return chats?.filter((chat) => {
+      const [chatName] = chat.members.filter((member) => {
+        return member !== user?.data?.getUser?.username;
+      });
+      return chatName.indexOf(search) >= 0;
+    });
+  };
+
   return (
     <Wrapper>
-      <ChatActions />
+      <ChatActions/>
       {
-        chats && user && chats?.data?.getChats?.map((chat: Chat, index: number) => {
-          const name = chat.members.filter((member) => {
+        chats && user && filterChats(chats?.data?.getChats, inputValue)?.map((chat: Chat, index: number) => {
+          const [name] = chat.members.filter((member) => {
             return member !== user?.data?.getUser?.username;
-          })
-          return <ChatItem key={index} name={name[0]} message={chat?.messages[chat.messages.length - 1]?.message} />
+          });
+          return <ChatItem
+            key={index}
+            name={name}
+            setActiveChat={setActiveChat}
+            message={chat?.messages[chat.messages.length - 1]?.message}/>;
         })
       }
     </Wrapper>

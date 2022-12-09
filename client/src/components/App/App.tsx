@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {Sidebar} from '../Sidebar';
-import {Chat} from '../Chat';
+import {ChatContainer} from '../ChatContainer';
 import {Routes, Route, Navigate} from 'react-router-dom';
 import {SignIn} from '../SignIn';
 import {SignUp} from '../SignUp';
-import {gql} from 'graphql-tag';
 import {useApolloClient} from '@apollo/client';
+import GET_AUTH from '../../apollo/api/getAuth';
 
 const AppWrapper = styled.main`
   display: flex;
@@ -15,21 +15,12 @@ const AppWrapper = styled.main`
   padding: 1.5rem 1.8rem;
 `;
 
-const GET_AUTH = gql`
-    query {
-        auth {
-            user {
-                id
-            }
-        }
-    }
-`;
-
 function App() {
+  const [activeChat, setActiveChat] = useState<string | null>(null);
   const [isAuth, setIsAuth] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
   const client = useApolloClient();
+
   useEffect(() => {
     if (localStorage.getItem('token') && !isAuth) {
       client.query({
@@ -49,14 +40,15 @@ function App() {
     localStorage.clear();
     setIsAuth(false);
     client.resetStore();
-  }
+  };
 
   if (isLoading) return <div>Loading</div>;
   return (
     <AppWrapper>
       <Routes>
-        {!isAuth && <Route path="/" element={<Navigate to="/sign-in" replace />} />}
-        <Route path="/" element={[<Sidebar key={1} onLogout={onLogout}/>, <Chat key={2}/>]}/>
+        {!isAuth && <Route path="/" element={<Navigate to="/sign-in" replace/>}/>}
+        <Route path="/" element={[<Sidebar key={1} onLogout={onLogout} setActiveChat={setActiveChat}/>,
+          <ChatContainer key={2} activeChat={activeChat}/>]}/>
         <Route path="/sign-in" element={<SignIn isAuth={isAuth} setIsAuth={setIsAuth}/>}/>
         <Route path="/sign-up" element={<SignUp isAuth={isAuth} setIsAuth={setIsAuth}/>}/>
         <Route path="*" element={<Navigate to="/" replace/>}/>

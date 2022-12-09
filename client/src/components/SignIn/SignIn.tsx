@@ -3,27 +3,20 @@ import {Link, Navigate} from 'react-router-dom';
 import {Wrapper, Title, Label, Input, Error, Button, Text} from '../../common/FormParts';
 import {Transition} from 'react-transition-group';
 import useTransitionError from '../../hooks/useTransitionError';
-import {gql} from 'graphql-tag';
 import {useMutation} from '@apollo/client';
 import {ServerError} from '../../common/FormParts/FormParts';
 import React from 'react';
+import SIGN_IN from '../../apollo/api/signIn';
 
 interface IProps {
   isAuth: boolean;
   setIsAuth: (bool: boolean) => void;
 }
+
 interface IValues {
   username: string;
   password: string;
 }
-
-const SIGN_IN = gql`
-    mutation signIn($user: SignInInput!) {
-        signIn(signInInput: $user) {
-            access_token
-        }
-    }
-`;
 
 const SignIn: React.FC<IProps> = ({isAuth, setIsAuth}) => {
   const [signIn, {loading, error}] = useMutation(SIGN_IN);

@@ -7,7 +7,7 @@ const SearchLabel = styled.label`
   display: inline-block;
   width: 100%;
   height: 2.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   &:after {
     position: absolute;
     content: "";
@@ -38,12 +38,14 @@ const SearchInput = styled.input`
   }
 `;
 
-const Search = () => {
-  const [inputValue, setInputValue] = useState<string>('');
+interface ISearch {
+  inputValue: string
+  setInputValue: (value: string) => void
+}
 
+const Search: React.FC<ISearch> = ({inputValue, setInputValue}) => {
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
-    console.log(event.target.value);
   };
 
   return (

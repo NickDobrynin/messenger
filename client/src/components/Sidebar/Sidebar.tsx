@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import {UserActions, ChatList, Search} from '../../common/Sidebar';
-import React from 'react';
-import {Navigate} from 'react-router-dom';
+import React, {useState} from 'react';
+import {useQuery} from '@apollo/client';
+import GET_USER from '../../apollo/api/getUser';
 
 const Wrapper = styled.div`
   display: flex;
@@ -21,17 +22,29 @@ const UserPanel = styled.div`
   }
 `;
 
+const UserName = styled.div`
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: .5rem;
+  padding-left: .5rem;
+`;
+
 interface IProps {
-  onLogout: () => void;
+  onLogout: () => void
+  setActiveChat: (chatName: string | null) => void
 }
 
-const Sidebar: React.FC<IProps> = ({onLogout}) => {
+const Sidebar: React.FC<IProps> = ({onLogout, setActiveChat}) => {
+  const user = useQuery(GET_USER);
+  const [inputValue, setInputValue] = useState<string>('');
+
   return (
     <Wrapper>
       <UserActions onLogout={onLogout}/>
       <UserPanel>
-        <Search />
-        <ChatList />
+        <Search inputValue={inputValue} setInputValue={setInputValue}/>
+        <UserName>{user && `Привет, ${user?.data?.getUser?.username}`}</UserName>
+        <ChatList inputValue={inputValue} setActiveChat={setActiveChat}/>
       </UserPanel>
     </Wrapper>
   )

@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import {Message} from '../../../../types';
+import React from 'react';
 
 const Wrapper = styled.div`
   position: relative;
@@ -8,11 +10,13 @@ const Wrapper = styled.div`
   margin: auto -1.6rem 0;
   padding: 1rem 1.6rem 0;
   overflow-y: auto;
+
   &::-webkit-scrollbar {
     position: absolute;
     width: 5px;
-    
+
   }
+
   &::-webkit-scrollbar-thumb {
     background: #E7E7E7;
     -webkit-border-radius: 5px;
@@ -20,7 +24,8 @@ const Wrapper = styled.div`
     border-radius: 5px;
   }
 `;
-const Message = styled.div`
+const ReceivedMessage = styled.div`
+  position: relative;
   display: flex;
   font-size: .9rem;
   align-items: center;
@@ -29,10 +34,11 @@ const Message = styled.div`
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
   border-radius: 15px;
-  padding: 0 1rem;
+  padding: .4rem 3rem .4rem 1rem;
   margin-bottom: 1rem;
 `;
-const UserMessage = styled.div`
+const SentMessage = styled.div`
+  position: relative;
   display: flex;
   font-size: .9rem;
   align-items: center;
@@ -43,16 +49,45 @@ const UserMessage = styled.div`
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
   border-radius: 15px;
-  padding: 0 1rem;
+  padding: .4rem 3rem .4rem 1rem;
   margin-bottom: 1rem;
 `;
+const MessageTime = styled.div`
+  position: absolute;
+  font-size: .6rem;
+  bottom: .2rem;
+  right: .7rem;
+`;
 
-const ChatBody = () => (
-  <Wrapper>
-    <Message>Hey There!</Message>
-    <Message>How are you?</Message>
-    <UserMessage>Hello!</UserMessage>
-  </Wrapper>
-);
+interface IChatBody {
+  messages: Message[];
+  user: string;
+}
+
+const ChatBody: React.FC<IChatBody> = ({messages, user}) => {
+  return (
+    <Wrapper>
+      {messages.map((message) => {
+        const date = new Date(message.date);
+        const time = `${date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`;
+        if (message.from !== user) {
+          return (
+            <ReceivedMessage key={message.id}>
+              {message.message}
+              <MessageTime>{time}</MessageTime>
+            </ReceivedMessage>
+          );
+        } else {
+          return (
+            <SentMessage key={message.id}>
+              {message.message}
+              <MessageTime>{time}</MessageTime>
+            </SentMessage>
+          );
+        }
+      })}
+    </Wrapper>
+  );
+};
 
 export default ChatBody;

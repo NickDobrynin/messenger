@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import noAvatar from '../../../assets/icons/no-avatar.jpg';
+import React from 'react';
 
 const Wrapper = styled.div`
   position: relative;
@@ -9,9 +10,11 @@ const Wrapper = styled.div`
   -webkit-border-radius: 1.25rem;
   -moz-border-radius: 1.25rem;
   border-radius: 1.25rem;
+
   &:not(:last-child) {
     margin-bottom: 20px;
   }
+
   &:not(:last-child) {
     &:after {
       position: absolute;
@@ -22,12 +25,14 @@ const Wrapper = styled.div`
       background-color: #B4ABABA8;
     }
   }
+
   &:hover {
     .chat-name {
       text-decoration-color: #000;
     }
   }
 `;
+
 const ChatIcon = styled.div`
   width: 2rem;
   height: 2rem;
@@ -56,13 +61,17 @@ const Message = styled.div`
 `;
 
 interface IProps {
-  name: string;
-  message: string;
+  name: string
+  message: string
+  setActiveChat: (chatName: string | null) => void
 }
 
-const ChatItem: React.FC<IProps> = ({name, message}) => {
+const ChatItem: React.FC<IProps> = ({name, message, setActiveChat}) => {
+  const setChatHandler = () => {
+    setActiveChat(name);
+  }
   return (
-    <Wrapper>
+    <Wrapper onClick={setChatHandler}>
       <ChatIcon><Image src={noAvatar}/></ChatIcon>
       <ChatInfo>
         <ChatName className="chat-name">{name}</ChatName>

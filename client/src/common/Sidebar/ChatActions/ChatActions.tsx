@@ -1,7 +1,9 @@
 import styled from 'styled-components';
 import {useState, useRef, useEffect, ChangeEvent, KeyboardEvent} from 'react';
-import {gql} from 'graphql-tag';
 import {useMutation} from '@apollo/client';
+import CREATE_CHAT from '../../../apollo/api/createChat';
+import GET_CHATS from '../../../apollo/api/getChats';
+import {Chat} from '../../../../types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -56,21 +58,26 @@ const ErrorMessage = styled.div`
   font-size: .8rem;
 `;
 
-const CREATE_CHAT = gql`
-    mutation createChat($to: String!) {
-        createChat(to: $to) {
-            id
-            members
-        }
-    }
-`;
+interface IChats {
+  getChats: Chat[]
+}
 
 const ChatActions = () => {
   const [showInput, setShowInput] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [createChat] = useMutation(CREATE_CHAT);
+  const [createChat] = useMutation(CREATE_CHAT, {
+    update(cache, {data: {createChat}}) {
+      const chats = cache.readQuery<IChats>({query: GET_CHATS})!.getChats;
+      cache.writeQuery({
+        query: GET_CHATS,
+        data: {
+          getChats: [...chats, createChat]
+        }
+      })
+    }
+  });
 
   useEffect(() => {
     showInput && inputRef?.current?.focus();
@@ -120,7 +127,7 @@ const ChatActions = () => {
           : (
             <>
               <Title>Чаты</Title>
-              <Button onClick={showInputHandler} aria-label="Add chat" title="Add chat">+</Button>
+              <Button onClick={showInputHandler} aria-label="Добавить чат" title="Добавить чат">+</Button>
             </>
           )
       }
