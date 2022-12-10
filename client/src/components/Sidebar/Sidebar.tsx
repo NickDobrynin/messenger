@@ -47,13 +47,15 @@ const Sidebar: React.FC<IProps> = ({onLogout, setActiveChat}) => {
     variables: {
       username: user?.data?.getUser?.username
     },
+    fetchPolicy: 'no-cache'
   });
+  console.log(subscription)
   useEffect(() => {
     const currentChats = client.readQuery<IChats>({query: GET_CHATS})?.getChats;
-    currentChats && client.writeQuery({
+    currentChats && subscription.data && client.writeQuery({
       query: GET_CHATS,
       data: {
-        getChats: [...currentChats.map((chat: Chat) => {
+        getChats: [subscription?.data?.subscribeChats, ...currentChats.map((chat: Chat) => {
           if (chat.id === subscription?.data?.subscribeChats.id) return subscription?.data?.subscribeChats;
           else return chat;
         })]
