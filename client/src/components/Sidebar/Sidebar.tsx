@@ -69,7 +69,7 @@ const Sidebar: React.FC<IProps> = ({onLogout, setActiveChat}) => {
       <UserActions onLogout={onLogout}/>
       <UserPanel>
         <Search inputValue={inputValue} setInputValue={setInputValue}/>
-        <UserName>{user && `Привет, ${user?.data?.getUser?.username}`}</UserName>
+        {user?.data?.getUser?.username && <UserName>{user && `Привет, ${user.data.getUser.username}`}</UserName>}
         <ChatList inputValue={inputValue} setActiveChat={setActiveChat}/>
       </UserPanel>
     </Wrapper>
