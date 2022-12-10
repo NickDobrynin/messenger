@@ -14,7 +14,7 @@ import { JwtService } from '@nestjs/jwt';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      url: 'mongodb://127.0.0.1:27017/messengerDB',
+      url: 'mongodb+srv://username:username@messengerdb.jnwx7lt.mongodb.net/messengerDB?retryWrites=true&w=majority',
       synchronize: true,
       useUnifiedTopology: true,
       entities: [User, Chat],

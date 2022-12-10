@@ -49,7 +49,7 @@ const Sidebar: React.FC<IProps> = ({onLogout, setActiveChat}) => {
     },
     fetchPolicy: 'no-cache'
   });
-  console.log(subscription)
+
   useEffect(() => {
     const currentChats = client.readQuery<IChats>({query: GET_CHATS})?.getChats;
     currentChats && subscription.data && client.writeQuery({
