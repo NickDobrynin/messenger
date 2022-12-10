@@ -23,7 +23,7 @@ type Message {
 
 type Mutation {
   createChat(to: String!): Chat!
-  sendMessage(chatId: String!, message: String!, to: String!): Message!
+  sendMessage(chatId: String!, message: String!, to: String!): Chat!
   signIn(signInInput: SignInInput!): SignInResponse!
   signUp(signUpInput: SignUpInput!): SignUpResponse!
 }
@@ -55,7 +55,7 @@ type SignUpResponse {
 }
 
 type Subscription {
-  newMessage(username: String!): Message!
+  subscribeChats(username: String!): Chat!
 }
 
 type User {

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import {Message} from '../../../../types';
-import React from 'react';
+import {Chat} from '../../../../types';
+import React, {useEffect, useRef} from 'react';
 
 const Wrapper = styled.div`
   position: relative;
@@ -60,14 +60,21 @@ const MessageTime = styled.div`
 `;
 
 interface IChatBody {
-  messages: Message[];
-  user: string;
+  chat: Chat | null
+  user: string
 }
 
-const ChatBody: React.FC<IChatBody> = ({messages, user}) => {
+const ChatBody: React.FC<IChatBody> = ({chat, user}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.scrollTop = ref.current.scrollHeight;
+    }
+  }, [chat])
+
   return (
-    <Wrapper>
-      {messages.map((message) => {
+    <Wrapper ref={ref}>
+      {chat?.messages?.map((message) => {
         const date = new Date(message.date);
         const time = `${date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`;
         if (message.from !== user) {

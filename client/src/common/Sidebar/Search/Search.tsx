@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import searchIcon from '../../../assets/icons/search-icon.svg';
-import React, {useState} from 'react';
+import React from 'react';
 
 const SearchLabel = styled.label`
   position: relative;

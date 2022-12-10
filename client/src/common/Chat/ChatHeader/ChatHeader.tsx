@@ -40,7 +40,7 @@ const ChatName = styled.div`
 `;
 
 interface IProps {
-  name: string;
+  name: string | null;
 }
 
 const ChatHeader: React.FC<IProps> = ({name}) => (

@@ -25,7 +25,7 @@ import { JwtService } from '@nestjs/jwt';
       driver: ApolloDriver,
       subscriptions: {
         'subscriptions-transport-ws': {
-          path: '/graphql',
+          path: '/graphql/subscription',
           onConnect: (connectionParams) => {
             return {
               req: {

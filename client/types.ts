@@ -37,7 +37,7 @@ export type Message = {
 export type Mutation = {
   __typename?: 'Mutation';
   createChat: Chat;
-  sendMessage: Message;
+  sendMessage: Chat;
   signIn: SignInResponse;
   signUp: SignUpResponse;
 };
@@ -95,11 +95,11 @@ export type SignUpResponse = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  newMessage: Message;
+  subscribeChats: Chat;
 };
 
 
-export type SubscriptionNewMessageArgs = {
+export type SubscriptionSubscribeChatsArgs = {
   username: Scalars['String'];
 };
 

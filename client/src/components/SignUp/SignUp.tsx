@@ -35,6 +35,7 @@ const SignUp: React.FC<IProps> = ({isAuth, setIsAuth}) => {
               password: values.password
             }
           },
+          fetchPolicy: 'no-cache'
         });
         localStorage.setItem('token', response.data.signUp.access_token);
         setIsAuth(true);

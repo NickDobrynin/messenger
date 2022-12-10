@@ -34,7 +34,8 @@ const SignIn: React.FC<IProps> = ({isAuth, setIsAuth}) => {
               username: values.username,
               password: values.password
             }
-          }
+          },
+          fetchPolicy: 'no-cache'
         });
 
         localStorage.setItem('token', response.data.signIn.access_token);

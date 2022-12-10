@@ -1,8 +1,8 @@
 import {gql} from 'graphql-tag';
 
-const SEND_MESSAGE = gql`
-    mutation sendMessage($message: String!, $to: String!, $chatId: String!) {
-        sendMessage(message: $message, to: $to, chatId: $chatId) {
+const SUBSCRIBE_CHATS = gql`
+    subscription subscribeChats($username: String!) {
+        subscribeChats(username: $username) {
             id
             members
             messages {
@@ -15,4 +15,4 @@ const SEND_MESSAGE = gql`
     }
 `;
 
-export default SEND_MESSAGE;
+export default SUBSCRIBE_CHATS;

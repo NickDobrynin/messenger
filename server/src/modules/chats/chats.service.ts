@@ -18,6 +18,11 @@ export class ChatsService {
     return chats.filter((chat) => chat.members.includes(username));
   }
 
+  async getChat(id): Promise<Chat> {
+    const chat = await this.chatsRepository.findOneBy({ id });
+    return chat;
+  }
+
   async createChat(from, to): Promise<Chat> {
     const userChats = await this.getChats(from);
     const user = await this.usersService.getUser(to);

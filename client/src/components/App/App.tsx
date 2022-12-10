@@ -25,7 +25,6 @@ function App() {
     if (localStorage.getItem('token') && !isAuth) {
       client.query({
         query: GET_AUTH,
-        fetchPolicy: 'network-only'
       }).then(result => {
         if (result.data.auth) setIsAuth(true);
       }).finally(() => {
@@ -36,7 +35,7 @@ function App() {
     }
   }, []);
 
-  const onLogout = () => {
+  const onLogout = async () => {
     localStorage.clear();
     setIsAuth(false);
     client.resetStore();

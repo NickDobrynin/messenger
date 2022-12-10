@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 import {UserActions, ChatList, Search} from '../../common/Sidebar';
-import React, {useState} from 'react';
-import {useQuery} from '@apollo/client';
+import React, {useEffect, useState} from 'react';
+import {useApolloClient, useQuery, useSubscription} from '@apollo/client';
 import GET_USER from '../../apollo/api/getUser';
+import SUBSCRIBE_CHATS from '../../apollo/api/subscribeChats';
+import GET_CHATS from '../../apollo/api/getChats';
+import {Chat} from '../../../types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -29,13 +32,34 @@ const UserName = styled.div`
   padding-left: .5rem;
 `;
 
+interface IChats {
+  getChats: Chat[]
+}
 interface IProps {
   onLogout: () => void
   setActiveChat: (chatName: string | null) => void
 }
 
 const Sidebar: React.FC<IProps> = ({onLogout, setActiveChat}) => {
+  const client = useApolloClient();
   const user = useQuery(GET_USER);
+  const subscription = useSubscription(SUBSCRIBE_CHATS, {
+    variables: {
+      username: user?.data?.getUser?.username
+    },
+  });
+  useEffect(() => {
+    const currentChats = client.readQuery<IChats>({query: GET_CHATS})?.getChats;
+    currentChats && client.writeQuery({
+      query: GET_CHATS,
+      data: {
+        getChats: [...currentChats.map((chat: Chat) => {
+          if (chat.id === subscription?.data?.subscribeChats.id) return subscription?.data?.subscribeChats;
+          else return chat;
+        })]
+      }
+    })
+  }, [subscription]);
   const [inputValue, setInputValue] = useState<string>('');
 
   return (

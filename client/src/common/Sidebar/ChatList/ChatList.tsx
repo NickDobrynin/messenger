@@ -4,8 +4,7 @@ import {useQuery} from '@apollo/client';
 import {Chat} from '../../../../types';
 import GET_USER from '../../../apollo/api/getUser';
 import GET_CHATS from '../../../apollo/api/getChats';
-import React, {MouseEvent} from 'react';
-import {log} from 'util';
+import React, {useEffect, useState} from 'react';
 
 const Wrapper = styled.div`
   background-color: #fff;
@@ -23,7 +22,12 @@ interface IChatList {
 
 const ChatList: React.FC<IChatList> = ({inputValue, setActiveChat}) => {
   const user = useQuery(GET_USER);
-  const chats = useQuery(GET_CHATS);
+  const chats = useQuery(GET_CHATS, {nextFetchPolicy: 'no-cache'});
+  const [chatData, setChatData] = useState<Chat[] | null>(null);
+
+  useEffect(() => {
+    if (chats?.data?.getChats) setChatData(chats.data.getChats);
+  }, [chats]);
 
   const filterChats = (chats: Chat[], search: string) => {
     if (!search.trim()) return chats;
@@ -39,7 +43,7 @@ const ChatList: React.FC<IChatList> = ({inputValue, setActiveChat}) => {
     <Wrapper>
       <ChatActions/>
       {
-        chats && user && filterChats(chats?.data?.getChats, inputValue)?.map((chat: Chat, index: number) => {
+        chatData && user && filterChats(chatData, inputValue)?.map((chat: Chat, index: number) => {
           const [name] = chat.members.filter((member) => {
             return member !== user?.data?.getUser?.username;
           });
