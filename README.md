@@ -1,1 +1,1 @@
-[Link to App](https://messenger-client.vercel.app/)
+[Link to App](https://messenger-client-production-cafb.up.railway.app/)
