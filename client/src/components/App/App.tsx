@@ -7,6 +7,7 @@ import {SignIn} from '../SignIn';
 import {SignUp} from '../SignUp';
 import {useApolloClient} from '@apollo/client';
 import GET_AUTH from '../../apollo/api/getAuth';
+import {Preloader} from '../Preloader';
 
 const AppWrapper = styled.main`
   display: flex;
@@ -41,13 +42,12 @@ function App() {
     client.resetStore();
   };
 
-  if (isLoading) return <div>Loading</div>;
+  if (isLoading) return <Preloader />;
   return (
     <AppWrapper>
       <Routes>
         {!isAuth && <Route path="/" element={<Navigate to="/sign-in" replace/>}/>}
-        <Route path="/" element={[<Sidebar key={1} onLogout={onLogout} setActiveChat={setActiveChat}/>,
-          <ChatContainer key={2} activeChat={activeChat}/>]}/>
+        <Route path="/" element={[<Sidebar key={1} onLogout={onLogout} setActiveChat={setActiveChat}/>, <ChatContainer key={2} activeChat={activeChat}/>]}/>
         <Route path="/sign-in" element={<SignIn isAuth={isAuth} setIsAuth={setIsAuth}/>}/>
         <Route path="/sign-up" element={<SignUp isAuth={isAuth} setIsAuth={setIsAuth}/>}/>
         <Route path="*" element={<Navigate to="/" replace/>}/>

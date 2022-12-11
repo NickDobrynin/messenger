@@ -13,8 +13,13 @@ export default createGlobalStyle`
     font-family: 'Open Sans', sans-serif;
     font-weight: 500;
     font-size: 16px;
+    min-height: 100vh;
   }
   body {
     background-color: #EFF6FC;
+    min-height: 100vh;
+  }
+  #root {
+    min-height: 100vh;
   }
 `;
